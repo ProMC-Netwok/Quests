@@ -2,14 +2,15 @@ package com.leonardobishop.quests.bukkit.menu;
 
 import com.leonardobishop.quests.bukkit.menu.element.MenuElement;
 import com.leonardobishop.quests.common.player.QPlayer;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
 
 public abstract class QMenu {
 
     protected final QPlayer owner;
-    protected final Int2ObjectOpenHashMap<MenuElement> menuElements = new Int2ObjectOpenHashMap<>();
+    protected final HashMap<Integer, MenuElement> menuElements = new HashMap<>();
 
     public QMenu(QPlayer owner) {
         this.owner = owner;

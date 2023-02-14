@@ -53,8 +53,7 @@ public class Task {
      */
     public @Nullable Object getConfigValue(@NotNull String key) {
         Objects.requireNonNull(key, "key cannot be null");
-
-        return configValues.getOrDefault(key, null); //??? this will return null without the need of `OrDefault(key, null)`
+        return configValues.get(key);
     }
 
     /**

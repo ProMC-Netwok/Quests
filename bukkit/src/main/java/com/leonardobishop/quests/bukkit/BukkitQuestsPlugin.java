@@ -308,8 +308,6 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
                 Class.forName("org.bukkit.event.inventory.SmithItemEvent");
                 taskTypeManager.registerTaskType(new SmithingTaskType(this));
             } catch (ClassNotFoundException ignored) { } // server version cannot support task type
-            // TODO: FIX
-            // taskTypeManager.registerTaskType(new BrewingCertainTaskType());
             try {
                 Class.forName("org.bukkit.block.data.Ageable");
                 taskTypeManager.registerTaskType(new FarmingTaskType(this));
@@ -318,20 +316,7 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
                 Class.forName("io.papermc.paper.event.block.PlayerShearBlockEvent");
                 taskTypeManager.registerTaskType(new BlockshearingTaskType(this));
             } catch (ClassNotFoundException ignored) { } // server version cannot support task type
-            if (Bukkit.getPluginManager().isPluginEnabled("ASkyBlock")) {
-                taskTypeManager.registerTaskType(new ASkyBlockLevelTaskType(this));
-            }
-            if (Bukkit.getPluginManager().isPluginEnabled("BentoBox")) {
-                BentoBoxLevelTaskType.register(this, taskTypeManager);
-            }
-            //TODO FIX
-            if (Bukkit.getPluginManager().isPluginEnabled("IridiumSkyblock")
-                    && Bukkit.getPluginManager().getPlugin("IridiumSkyblock").getDescription().getVersion().startsWith("2")) {
-                taskTypeManager.registerTaskType(new IridiumSkyblockValueTaskType(this));
-            }
-            if (Bukkit.getPluginManager().isPluginEnabled("uSkyBlock")) {
-                taskTypeManager.registerTaskType(new uSkyBlockLevelTaskType(this));
-            }
+
             if (Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
                 taskTypeManager.registerTaskType(new CitizensDeliverTaskType(this));
                 taskTypeManager.registerTaskType(new CitizensInteractTaskType(this));
@@ -355,23 +340,10 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
                 taskTypeManager.registerTaskType(new ShopGUIPlusBuyTaskType(this, shopGUIPlusVersion));
                 taskTypeManager.registerTaskType(new ShopGUIPlusSellTaskType(this, shopGUIPlusVersion));
             }
-            if (Bukkit.getPluginManager().isPluginEnabled("FabledSkyblock")) {
-                // not tested
-                taskTypeManager.registerTaskType(new FabledSkyblockLevelTaskType(this));
+            if (Bukkit.getPluginManager().isPluginEnabled("JetMinions")) {
+                taskTypeManager.registerTaskType(new JetMinionsPlaceTaskType(this));
             }
-            if (Bukkit.getPluginManager().isPluginEnabled("SuperiorSkyblock2")) {
-                // not tested
-                taskTypeManager.registerTaskType(new SuperiorSkyblockLevelType(this));
-                taskTypeManager.registerTaskType(new SuperiorSkyblockWorthType(this));
-            }
-            if (Bukkit.getPluginManager().isPluginEnabled("VotingPlugin")) {
-                // not tested
-                taskTypeManager.registerTaskType(new VotingPluginVoteType(this));
-            }
-            if (Bukkit.getPluginManager().isPluginEnabled("Votifier")) {
-                // not tested
-                taskTypeManager.registerTaskType(new NuVotifierVoteTaskType(this));
-            }
+
 
             taskTypeManager.closeRegistrations();
             questsLogger.info(taskTypeManager.getTaskTypes().size() + " task types have been registered"
@@ -504,20 +476,20 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
         if (!questsDirectory.exists() && !questsDirectory.isDirectory()) {
             questsDirectory.mkdir();
 
-            ArrayList<String> examples = new ArrayList<>();
-            examples.add("example1.yml");
-            examples.add("example2.yml");
-            examples.add("example3.yml");
-            examples.add("example4.yml");
-            examples.add("example5.yml");
-            examples.add("example6.yml");
-            examples.add("example7.yml");
-            examples.add("README.txt");
-
-            for (String name : examples) {
-                File file = new File(this.getDataFolder() + File.separator + "quests" + File.separator + name);
-                writeResourceToFile("resources/bukkit/quests/" + name, file);
-            }
+//            ArrayList<String> examples = new ArrayList<>();
+//            examples.add("example1.yml");
+//            examples.add("example2.yml");
+//            examples.add("example3.yml");
+//            examples.add("example4.yml");
+//            examples.add("example5.yml");
+//            examples.add("example6.yml");
+//            examples.add("example7.yml");
+//            examples.add("README.txt");
+//
+//            for (String name : examples) {
+//                File file = new File(this.getDataFolder() + File.separator + "quests" + File.separator + name);
+//                writeResourceToFile("resources/bukkit/quests/" + name, file);
+//            }
         }
 
         File itemsDirectory = new File(this.getDataFolder() + File.separator + "items");

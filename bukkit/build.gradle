@@ -48,7 +48,7 @@ repositories {
 dependencies {
     compileOnly project(':common')
     // Paper
-    compileOnly 'io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT'
+    compileOnly ('com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT')
     // ASkyBlock
     compileOnly ('com.wasteofplastic:askyblock:3.0.9.4') { transitive = false }
     // AuthLib
@@ -94,7 +94,10 @@ dependencies {
 
     // IridiumSkyblock
     compileOnly fileTree(dir: 'libs', includes: ['*.jar'])
-
+    // AuctionGUI+
+    implementation 'com.github.brcdev-minecraft:auctiongui-api:1.0.0'
+    // MiniMessage
+    implementation group: 'net.kyori', name: 'adventure-text-minimessage', version: '4.12.0'
     // bStats
     implementation 'org.bstats:bstats-bukkit-lite:1.8'
     // HikariCP
