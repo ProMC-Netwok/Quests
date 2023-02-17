@@ -31,8 +31,8 @@ import com.leonardobishop.quests.bukkit.runnable.QuestsAutoSaveRunnable;
 import com.leonardobishop.quests.bukkit.storage.MySqlStorageProvider;
 import com.leonardobishop.quests.bukkit.storage.YamlStorageProvider;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskTypeManager;
-import com.leonardobishop.quests.bukkit.tasktype.type.*;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.*;
+import com.leonardobishop.quests.bukkit.tasktype.type.external.*;
+import com.leonardobishop.quests.bukkit.tasktype.type.internal.*;
 import com.leonardobishop.quests.bukkit.util.LogHistory;
 import com.leonardobishop.quests.common.config.ConfigProblem;
 import com.leonardobishop.quests.common.config.ConfigProblemDescriptions;
@@ -61,7 +61,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -278,70 +277,70 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
                 this.essentialsHook = new EssentialsHook();
             }
 
-            taskTypeManager.registerTaskType(new MiningTaskType(this));
-            taskTypeManager.registerTaskType(new BuildingTaskType(this));
-            taskTypeManager.registerTaskType(new MobkillingTaskType(this));
-            taskTypeManager.registerTaskType(new PlayerkillingTaskType(this));
-            taskTypeManager.registerTaskType(new FishingTaskType(this));
-            taskTypeManager.registerTaskType(new SmeltingTaskType(this));
-            taskTypeManager.registerTaskType(new InventoryTaskType(this));
-            taskTypeManager.registerTaskType(new ConsumeTaskType(this));
-            taskTypeManager.registerTaskType(new WalkingTaskType(this));
-            taskTypeManager.registerTaskType(new TamingTaskType(this));
-            taskTypeManager.registerTaskType(new MilkingTaskType(this));
-            taskTypeManager.registerTaskType(new ShearingTaskType(this));
-            taskTypeManager.registerTaskType(new PositionTaskType(this));
-            taskTypeManager.registerTaskType(new PlaytimeTaskType(this));
-            taskTypeManager.registerTaskType(new BrewingTaskType(this));
-            taskTypeManager.registerTaskType(new ExpEarnTaskType(this));
-            taskTypeManager.registerTaskType(new BreedingTaskType(this));
-            taskTypeManager.registerTaskType(new EnchantingTaskType(this));
-            taskTypeManager.registerTaskType(new DealDamageTaskType(this));
-            taskTypeManager.registerTaskType(new PermissionTaskType(this));
-            taskTypeManager.registerTaskType(new DistancefromTaskType(this));
-            taskTypeManager.registerTaskType(new CommandTaskType(this));
-            taskTypeManager.registerTaskType(new CraftingTaskType(this));
-            taskTypeManager.registerTaskType(new BucketEmptyTaskType(this));
-            taskTypeManager.registerTaskType(new BucketFillTaskType(this));
-            taskTypeManager.registerTaskType(new InteractTaskType(this));
+            taskTypeManager.registerTaskType(new BlockBreak(this));
+            taskTypeManager.registerTaskType(new BlockPlace(this));
+            taskTypeManager.registerTaskType(new KillMob(this));
+            taskTypeManager.registerTaskType(new KillPlayer(this));
+            taskTypeManager.registerTaskType(new Fish(this));
+            taskTypeManager.registerTaskType(new Smelt(this));
+            taskTypeManager.registerTaskType(new Inventory(this));
+            taskTypeManager.registerTaskType(new Consume(this));
+            taskTypeManager.registerTaskType(new Move(this));
+            taskTypeManager.registerTaskType(new Tame(this));
+            taskTypeManager.registerTaskType(new Milk(this));
+            taskTypeManager.registerTaskType(new Shear(this));
+            taskTypeManager.registerTaskType(new Position(this));
+            taskTypeManager.registerTaskType(new PlayTime(this));
+            taskTypeManager.registerTaskType(new Brew(this));
+            taskTypeManager.registerTaskType(new Experience(this));
+            taskTypeManager.registerTaskType(new Breed(this));
+            taskTypeManager.registerTaskType(new Enchant(this));
+            taskTypeManager.registerTaskType(new DealDamage(this));
+            taskTypeManager.registerTaskType(new Permission(this));
+            taskTypeManager.registerTaskType(new Distance(this));
+            taskTypeManager.registerTaskType(new Command(this));
+            taskTypeManager.registerTaskType(new Craft(this));
+            taskTypeManager.registerTaskType(new BucketEmpty(this));
+            taskTypeManager.registerTaskType(new BucketFill(this));
+            taskTypeManager.registerTaskType(new Interact(this));
             try {
                 Class.forName("org.bukkit.event.inventory.SmithItemEvent");
-                taskTypeManager.registerTaskType(new SmithingTaskType(this));
+                taskTypeManager.registerTaskType(new Smith(this));
             } catch (ClassNotFoundException ignored) { } // server version cannot support task type
             try {
                 Class.forName("org.bukkit.block.data.Ageable");
-                taskTypeManager.registerTaskType(new FarmingTaskType(this));
+                taskTypeManager.registerTaskType(new Farm(this));
             } catch (ClassNotFoundException ignored) { } // server version cannot support task type
             try {
                 Class.forName("io.papermc.paper.event.block.PlayerShearBlockEvent");
-                taskTypeManager.registerTaskType(new BlockshearingTaskType(this));
+                taskTypeManager.registerTaskType(new BlockShear(this));
             } catch (ClassNotFoundException ignored) { } // server version cannot support task type
 
             if (Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
-                taskTypeManager.registerTaskType(new CitizensDeliverTaskType(this));
-                taskTypeManager.registerTaskType(new CitizensInteractTaskType(this));
+                taskTypeManager.registerTaskType(new CitizensDeliver(this));
+                taskTypeManager.registerTaskType(new CitizensInteract(this));
             }
             if (Bukkit.getPluginManager().isPluginEnabled("MythicMobs")) {
                 String mythicMobsVersion = Bukkit.getPluginManager().getPlugin("MythicMobs").getDescription().getVersion();
                 if (mythicMobsVersion.startsWith("4") || mythicMobsVersion.startsWith("5")) {
-                    taskTypeManager.registerTaskType(new MythicMobsKillingTaskType(this, mythicMobsVersion));
+                    taskTypeManager.registerTaskType(new MythicMobsKill(this, mythicMobsVersion));
                 }
             }
             if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-                taskTypeManager.registerTaskType(new PlaceholderAPIEvaluateTaskType(this));
+                taskTypeManager.registerTaskType(new PlaceholderAPIEvaluate(this));
             }
             if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
-                taskTypeManager.registerTaskType(new EssentialsMoneyEarnTaskType(this));
-                taskTypeManager.registerTaskType(new EssentialsBalanceTaskType(this));
+                taskTypeManager.registerTaskType(new EssentialsMoneyEarn(this));
+                taskTypeManager.registerTaskType(new EssentialsBalance(this));
             }
             if (Bukkit.getPluginManager().isPluginEnabled("ShopGUIPlus")) {
                 // not tested
                 String shopGUIPlusVersion = Bukkit.getPluginManager().getPlugin("ShopGUIPlus").getDescription().getVersion();
-                taskTypeManager.registerTaskType(new ShopGUIPlusBuyTaskType(this, shopGUIPlusVersion));
-                taskTypeManager.registerTaskType(new ShopGUIPlusSellTaskType(this, shopGUIPlusVersion));
+                taskTypeManager.registerTaskType(new ShopGUIPlusBuy(this, shopGUIPlusVersion));
+                taskTypeManager.registerTaskType(new ShopGUIPlusSell(this, shopGUIPlusVersion));
             }
             if (Bukkit.getPluginManager().isPluginEnabled("JetMinions")) {
-                taskTypeManager.registerTaskType(new JetMinionsPlaceTaskType(this));
+                taskTypeManager.registerTaskType(new JetMinionsPlace(this));
             }
 
 

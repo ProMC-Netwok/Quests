@@ -2,8 +2,10 @@ package com.leonardobishop.quests.bukkit.menu;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.config.BukkitQuestsConfig;
-import com.leonardobishop.quests.bukkit.menu.element.*;
-import com.leonardobishop.quests.bukkit.util.StringUtils;
+import com.leonardobishop.quests.bukkit.menu.element.CustomMenuElement;
+import com.leonardobishop.quests.bukkit.menu.element.MenuElement;
+import com.leonardobishop.quests.bukkit.menu.element.PageNextMenuElement;
+import com.leonardobishop.quests.bukkit.menu.element.PagePrevMenuElement;
 import com.leonardobishop.quests.common.player.QPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public abstract class PaginatedQMenu extends QMenu {
 
@@ -59,75 +62,68 @@ public abstract class PaginatedQMenu extends QMenu {
         this.maxPage = maxPage;
     }
 
-    public void populate(String customElementsPath, List<MenuElement> menuElementsToFill, MenuElement backMenuElement) {
+    public void populate(String path, List<MenuElement> questElements, MenuElement backMenuElement) {
         Player player = Bukkit.getPlayer(owner.getPlayerUUID());
-        if (player == null) {
-            return;
-        }
+        // 如果玩家不在线
+        if (player == null) return;
+        // 新建一个菜单元素集合
+        MenuElement[] staticElement = new MenuElement[pageSize];
+        int staticCount = 0;
 
-        MenuElement[] staticMenuElements = new MenuElement[pageSize];
-        int customStaticElements = 0;
-        MenuElement spacer = new SpacerMenuElement();
+        // 获取自定义图标配置
+        if (path != null) {
+            // 判断配置文件是否是Section
+            if (plugin.getConfig().isConfigurationSection(path)) {
+                // 获取所有键值
+                for (String key : plugin.getConfig().getConfigurationSection(path).getKeys(false)) {
+                    // 获取该图标需要占用的Slot
+                    List<String> slots = plugin.getConfig().getStringList(path + "." + key + ".slots");
+                    // 是否是动态图标(更新变量)
+                    boolean isAnime = plugin.getConfig().getBoolean(path + "." + key + ".static", false);
 
-        // populate custom elements first
-        if (customElementsPath != null) {
-            if (plugin.getConfig().isConfigurationSection(customElementsPath)) {
-                for (String s : plugin.getConfig().getConfigurationSection(customElementsPath).getKeys(false)) {
-                    if (!StringUtils.isNumeric(s)) continue;
-                    int slot = Integer.parseInt(s);
-                    int repeat = plugin.getConfig().getInt(customElementsPath + "." + s + ".repeat");
-                    boolean staticElement = plugin.getConfig().getBoolean(customElementsPath + "." + s + ".static", false);
                     MenuElement menuElement;
-                    if (plugin.getConfig().contains(customElementsPath + "." + s + ".display")) {
-                        ItemStack is = plugin.getConfiguredItemStack(customElementsPath + "." + s + ".display", plugin.getConfig());
-                        List<String> commands = plugin.getQuestsConfig().getStringList(customElementsPath + "." + s + ".commands");
-                        menuElement = new CustomMenuElement(plugin, owner.getPlayerUUID(), player.getName(), is, commands);
-                    } else if (plugin.getConfig().getBoolean(customElementsPath + "." + s + ".spacer", false)) {
-                        menuElement = spacer;
-                    } else continue; // user = idiot
+                    if (plugin.getConfig().contains(path + "." + key + ".display")) {
+                        ItemStack itemStack = plugin.getConfiguredItemStack(path + "." + key + ".display", plugin.getConfig());
+                        List<String> commands = plugin.getQuestsConfig().getStringList(path + "." + key + ".commands");
+                        menuElement = new CustomMenuElement(plugin, owner.getPlayerUUID(), player.getName(), itemStack, commands);
+                    } else continue;
 
-                    for (int i = 0; i <= repeat; i++) {
-                        if (staticElement) {
-                            int boundedSlot = slot + i % pageSize;
-                            staticMenuElements[boundedSlot] = menuElement;
-                            customStaticElements++;
-                        } else {
-                            menuElements.put(slot + i, menuElement);
+                    for (String slotString : slots) {
+                        if (Pattern.matches("[0-9]+", slotString)) {
+                            int slot = Integer.parseInt(slotString);
+                            if (!isAnime) {
+                                staticElement[slot] = menuElement;
+                                staticCount++;
+                            } else {
+                                menuElements.put(slot, menuElement);
+                            }
                         }
                     }
                 }
             }
         }
-
-        // TODO: make these page controls configurable
-        // if the amount of predicted menu elements is greater than the size of a page, add
-        // the page controls as menu elements
-        // this won't check if static elements overlap normal ones first but i don't care
+        // 获取菜单最大尺寸(index)
+        // 如果存在返回按键
+        // 则减去 9 (一行) 如果没有则减去 0
         int maxSize = pageSize - (backMenuElement == null ? 0 : 9);
+        // 获取任务配置
         BukkitQuestsConfig config = (BukkitQuestsConfig) plugin.getQuestsConfig();
-        if ((menuElements.isEmpty() ? 0 : Collections.max(menuElements.keySet())) + 1 > maxSize
-                || menuElements.keySet().size() + menuElementsToFill.size() + customStaticElements > maxSize) {
-            MenuElement pageNextMenuElement = new PageNextMenuElement(config, this);
-            MenuElement pagePrevMenuElement = new PagePrevMenuElement(config, this);
-            MenuElement pageDescMenuElement = new PageDescMenuElement(config, this);
-            staticMenuElements[45] = backMenuElement == null ? spacer : backMenuElement;
-            staticMenuElements[46] = spacer;
-            staticMenuElements[47] = spacer;
-            staticMenuElements[48] = pagePrevMenuElement;
-            staticMenuElements[49] = pageDescMenuElement;
-            staticMenuElements[50] = pageNextMenuElement;
-            staticMenuElements[51] = spacer;
-            staticMenuElements[52] = spacer;
-            staticMenuElements[53] = spacer;
 
-            // else find a place for the back button if needed
-        } else if (backMenuElement != null) {
-            int row = ((menuElements.keySet().size() + menuElementsToFill.size() + customStaticElements) / 9) + 1;
-            staticMenuElements[row * 9] = backMenuElement;
+        //Bukkit.getLogger().info("1 " + (Collections.max(menuElements.keySet())) + 1);
+        //Bukkit.getLogger().info("2 " + (menuElements.keySet().size() + questElements.size() + staticCount));
+
+        // 不知道怎么改了...
+        if (menuElements.keySet().size() + questElements.size() + staticCount - currentPage * maxSize > 0) {
+            MenuElement pageNextMenuElement = new PageNextMenuElement(config, this);
+            staticElement[52] = pageNextMenuElement;
+        } else {
+            MenuElement pagePrevMenuElement = new PagePrevMenuElement(config, this);
+            staticElement[46] = pagePrevMenuElement;
         }
+//        menuElements.isEmpty() ? 0 : Collections.max(menuElements.keySet()) + 1 > maxSize
 
         boolean staticMenuElementsIsFull = true;
-        for (MenuElement e : staticMenuElements) {
+        for (MenuElement e : staticElement) {
             if (e == null) {
                 staticMenuElementsIsFull = false;
                 break;
@@ -138,13 +134,13 @@ public abstract class PaginatedQMenu extends QMenu {
             return;
         }
 
-        // fill in the remaining menu elements into empty slots
+        // fill in the remaining menu elements into empty slots <- 这他妈的是啥??
         int slot = 0;
-        for (MenuElement element : menuElementsToFill) {
-            fillStaticMenuElements(slot, staticMenuElements);
+        for (MenuElement element : questElements) {
+            fillStaticMenuElements(slot, staticElement);
             while (menuElements.containsKey(slot)) {
                 slot++;
-                fillStaticMenuElements(slot, staticMenuElements);
+                fillStaticMenuElements(slot, staticElement);
             }
             menuElements.put(slot, element);
         }
@@ -154,13 +150,15 @@ public abstract class PaginatedQMenu extends QMenu {
     }
 
     private void fillStaticMenuElements(int slot, MenuElement[] staticMenuElements) {
+        // 在最大范围内
         if (slot % pageSize == 0) {
-            // new page, put in static menu elements
+            // 遍历输入的静态菜单元素
             for (int i = 0; i < staticMenuElements.length; i++) {
+                // 如果i位置的元素是null
                 if (staticMenuElements[i] == null) {
                     continue;
                 }
-
+                // 将静态菜单元素放置在菜单元素位置slot+i里
                 menuElements.put(slot + i, staticMenuElements[i]);
             }
         }

@@ -127,15 +127,24 @@ gui:
 #        type: "NETHERRACK"
 #      repeat: 3 # repeats for 3 more slots
 #  "c:examples": # apply to the category "examples"
-#    0:
+#    "test":
+#      slots:
+#        - 1
+#        - 2
+#        - 3
 #      display:
 #        name: "&cExample Custom Item (slot 1)"
 #        lore:
 #          - "&7This is a custom item which can be added"
 #          - "&7to your menus. This is purely cosmetic."
 #        type: "EMERALD_BLOCK"
+#        dummy: true
 #  "quests": # apply to the general quests menu IF categories are disabled
-#    0:
+#    "test":
+#      slots:
+#        - 1
+#        - 2
+#        - 3
 #      display:
 #        name: "&cExample Custom Item (slot 1)"
 #        lore:

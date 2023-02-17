@@ -55,8 +55,7 @@ public class QuestsCommandSwitcher extends CommandSwitcher implements TabExecuto
             return true;
         }
 
-        if (args.length == 0 && sender instanceof Player) {
-            Player player = (Player) sender;
+        if (args.length == 0 && sender instanceof Player player) {
             QPlayer qPlayer = plugin.getPlayerManager().getPlayer(player.getUniqueId());
             if (qPlayer == null) {
                 Messages.COMMAND_DATA_NOT_LOADED.send(player);
@@ -80,7 +79,7 @@ public class QuestsCommandSwitcher extends CommandSwitcher implements TabExecuto
     @Override
     public void showHelp(CommandSender sender) {
         sender.sendMessage(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "------------=[" + ChatColor.RED + " Quests v" + plugin
-                .getDescription().getVersion() + " " + ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "]=------------");
+                .getDescription().getVersion() + " " + ChatColor.GRAY + ChatColor.STRIKETHROUGH + "]=------------");
         sender.sendMessage(ChatColor.GRAY + "The following commands are available: ");
         sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests " + ChatColor.DARK_GRAY + ": show quests");
         if (sender.hasPermission(subcommands.get("category").getPermission())) {
@@ -108,7 +107,7 @@ public class QuestsCommandSwitcher extends CommandSwitcher implements TabExecuto
             sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a/admin " + ChatColor.DARK_GRAY + ": view help for admins");
         }
         sender.sendMessage(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "--------=[" + ChatColor.RED + " made with <3 by LMBishop " + ChatColor
-                .GRAY.toString() + ChatColor.STRIKETHROUGH + "]=--------");
+                .GRAY + ChatColor.STRIKETHROUGH + "]=--------");
     }
 
     @Override
