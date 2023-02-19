@@ -317,7 +317,6 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             } catch (ClassNotFoundException ignored) { } // server version cannot support task type
 
             if (Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
-                taskTypeManager.registerTaskType(new CitizensDeliver(this));
                 taskTypeManager.registerTaskType(new CitizensInteract(this));
             }
             if (Bukkit.getPluginManager().isPluginEnabled("MythicMobs")) {
@@ -341,6 +340,9 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             }
             if (Bukkit.getPluginManager().isPluginEnabled("JetMinions")) {
                 taskTypeManager.registerTaskType(new JetMinionsPlace(this));
+            }
+            if (Bukkit.getPluginManager().isPluginEnabled("MMOItems")) {
+                taskTypeManager.registerTaskType(new MMOItemsCraft(this));
             }
 
 

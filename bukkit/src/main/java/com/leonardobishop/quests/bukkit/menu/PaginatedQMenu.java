@@ -6,6 +6,7 @@ import com.leonardobishop.quests.bukkit.menu.element.CustomMenuElement;
 import com.leonardobishop.quests.bukkit.menu.element.MenuElement;
 import com.leonardobishop.quests.bukkit.menu.element.PageNextMenuElement;
 import com.leonardobishop.quests.bukkit.menu.element.PagePrevMenuElement;
+import com.leonardobishop.quests.bukkit.util.MenuUtils;
 import com.leonardobishop.quests.common.player.QPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -109,32 +111,22 @@ public abstract class PaginatedQMenu extends QMenu {
         // 获取任务配置
         BukkitQuestsConfig config = (BukkitQuestsConfig) plugin.getQuestsConfig();
 
-        //Bukkit.getLogger().info("1 " + (Collections.max(menuElements.keySet())) + 1);
-        //Bukkit.getLogger().info("2 " + (menuElements.keySet().size() + questElements.size() + staticCount));
-
-        // 不知道怎么改了...
-        if (menuElements.keySet().size() + questElements.size() + staticCount - currentPage * maxSize > 0) {
-            MenuElement pageNextMenuElement = new PageNextMenuElement(config, this);
-            staticElement[52] = pageNextMenuElement;
-        } else {
-            MenuElement pagePrevMenuElement = new PagePrevMenuElement(config, this);
-            staticElement[46] = pagePrevMenuElement;
-        }
-//        menuElements.isEmpty() ? 0 : Collections.max(menuElements.keySet()) + 1 > maxSize
-
-        boolean staticMenuElementsIsFull = true;
-        for (MenuElement e : staticElement) {
-            if (e == null) {
-                staticMenuElementsIsFull = false;
-                break;
-            }
-        }
-        if (staticMenuElementsIsFull) {
-            // moving on will result in an infinite loop
-            return;
+        // 不知道怎么改了... 还是改回来吧
+        int sizea = menuElements.isEmpty() ? 0 : Collections.max(menuElements.keySet());
+        int sizeb = menuElements.size() + questElements.size() + staticCount;
+        if (sizea + 1 > maxSize || sizeb > maxSize) {
+            MenuElement nextPageElement = new PageNextMenuElement(config, this);
+            staticElement[52] = nextPageElement;
+            MenuElement prevPageElement = new PagePrevMenuElement(config, this);
+            staticElement[46] = prevPageElement;
+            staticElement[49] = backMenuElement;
+        } else if (backMenuElement != null) {
+            int slot = MenuUtils.getHigherOrEqualMultiple(maxSize, 9);
+            staticElement[slot + 4] = backMenuElement;
         }
 
-        // fill in the remaining menu elements into empty slots <- 这他妈的是啥??
+        if (!Arrays.stream(staticElement).toList().contains(null)) return;
+
         int slot = 0;
         for (MenuElement element : questElements) {
             fillStaticMenuElements(slot, staticElement);
@@ -145,22 +137,20 @@ public abstract class PaginatedQMenu extends QMenu {
             menuElements.put(slot, element);
         }
 
+
         this.minPage = 1;
         this.maxPage = (menuElements.isEmpty() ? 0 : Collections.max(menuElements.keySet())) / pageSize + 1;
     }
 
     private void fillStaticMenuElements(int slot, MenuElement[] staticMenuElements) {
         // 在最大范围内
-        if (slot % pageSize == 0) {
-            // 遍历输入的静态菜单元素
-            for (int i = 0; i < staticMenuElements.length; i++) {
-                // 如果i位置的元素是null
-                if (staticMenuElements[i] == null) {
-                    continue;
-                }
-                // 将静态菜单元素放置在菜单元素位置slot+i里
-                menuElements.put(slot + i, staticMenuElements[i]);
-            }
+        if (slot % pageSize != 0) return;
+        // 遍历输入的静态菜单元素
+        for (int i = 0; i < staticMenuElements.length; i++) {
+            // 如果i位置的元素是null
+            if (staticMenuElements[i] == null) continue;
+            // 将静态菜单元素放置在菜单元素位置slot+i里
+            menuElements.put(slot + i, staticMenuElements[i]);
         }
     }
 

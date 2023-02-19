@@ -22,7 +22,7 @@ public final class Move extends BukkitTaskType {
     private final BukkitQuestsPlugin plugin;
 
     public Move(BukkitQuestsPlugin plugin) {
-        super("move", TaskUtils.TASK_ATTRIBUTION_STRING, "Walk a set distance.");
+        super("moving", TaskUtils.TASK_ATTRIBUTION_STRING, "Walk a set distance.");
         this.plugin = plugin;
 
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "distance"));

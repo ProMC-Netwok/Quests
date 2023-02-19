@@ -5,6 +5,7 @@ import com.leonardobishop.quests.bukkit.menu.ClickResult;
 import com.leonardobishop.quests.bukkit.menu.PaginatedQMenu;
 import com.leonardobishop.quests.bukkit.util.MenuUtils;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
