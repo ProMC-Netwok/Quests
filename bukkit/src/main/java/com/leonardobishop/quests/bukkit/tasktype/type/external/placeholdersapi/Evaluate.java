@@ -1,4 +1,4 @@
-package com.leonardobishop.quests.bukkit.tasktype.type.external;
+package com.leonardobishop.quests.bukkit.tasktype.type.external.placeholdersapi;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
@@ -15,12 +15,12 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Arrays;
 
-public final class PlaceholderAPIEvaluate extends BukkitTaskType {
+public final class Evaluate extends BukkitTaskType {
 
     private final BukkitQuestsPlugin plugin;
     private BukkitTask poll;
 
-    public PlaceholderAPIEvaluate(BukkitQuestsPlugin plugin) {
+    public Evaluate(BukkitQuestsPlugin plugin) {
         super("placeholderapi_evaluate", TaskUtils.TASK_ATTRIBUTION_STRING, "Evaluate the result of a placeholder");
         this.plugin = plugin;
 
@@ -48,12 +48,12 @@ public final class PlaceholderAPIEvaluate extends BukkitTaskType {
                         continue;
                     }
 
-                    for (TaskUtils.PendingTask pendingTask : TaskUtils.getApplicableTasks(player, qPlayer, PlaceholderAPIEvaluate.this)) {
+                    for (TaskUtils.PendingTask pendingTask : TaskUtils.getApplicableTasks(player, qPlayer, Evaluate.this)) {
                         Quest quest = pendingTask.quest();
                         Task task = pendingTask.task();
                         TaskProgress taskProgress = pendingTask.taskProgress();
 
-                        PlaceholderAPIEvaluate.super.debug("Polling PAPI for player", quest.getId(), task.getId(), player.getUniqueId());
+                        Evaluate.super.debug("Polling PAPI for player", quest.getId(), task.getId(), player.getUniqueId());
 
                         String placeholder = (String) task.getConfigValue("placeholder");
                         // 需要判定的值
@@ -62,11 +62,11 @@ public final class PlaceholderAPIEvaluate extends BukkitTaskType {
                         try {
                             operator = Operator.valueOf((String) task.getConfigValue("operator"));
                         } catch (IllegalArgumentException exception) {
-                            PlaceholderAPIEvaluate.super.debug("Operator was specified but no such type, continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                            Evaluate.super.debug("Operator was specified but no such type, continuing...", quest.getId(), task.getId(), player.getUniqueId());
                             continue;
                         }
 
-                        PlaceholderAPIEvaluate.super.debug("Operator = " + operator, quest.getId(), task.getId(), player.getUniqueId());
+                        Evaluate.super.debug("Operator = " + operator, quest.getId(), task.getId(), player.getUniqueId());
 
                         if (placeholder != null && eval != null) {
                             String parse = PlaceholderAPI.setPlaceholders(player, placeholder);
@@ -75,13 +75,13 @@ public final class PlaceholderAPIEvaluate extends BukkitTaskType {
                                 switch (operator) {
                                     case EQUAL -> {
                                         if (parse.equals(String.valueOf(eval))) {
-                                            PlaceholderAPIEvaluate.super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
+                                            Evaluate.super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                                             taskProgress.setCompleted(true);
                                         }
                                     }
                                     case NOT_EQUAL -> {
                                         if (!parse.equals(String.valueOf(eval))) {
-                                            PlaceholderAPIEvaluate.super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
+                                            Evaluate.super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                                             taskProgress.setCompleted(true);
                                         }
                                     }
@@ -96,11 +96,11 @@ public final class PlaceholderAPIEvaluate extends BukkitTaskType {
                                     try {
                                         numReq = Double.parseDouble((String) eval);
                                     } catch (NumberFormatException exception) {
-                                        PlaceholderAPIEvaluate.super.debug("Numeric operator was specified but configured string to evaluate to cannot be parsed into a double, continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                                        Evaluate.super.debug("Numeric operator was specified but configured string to evaluate to cannot be parsed into a double, continuing...", quest.getId(), task.getId(), player.getUniqueId());
                                         continue;
                                     }
                                 } else {
-                                    PlaceholderAPIEvaluate.super.debug("Unknown evaluates type, continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                                    Evaluate.super.debug("Unknown evaluates type, continuing...", quest.getId(), task.getId(), player.getUniqueId());
                                     continue;
                                 }
 
@@ -108,37 +108,37 @@ public final class PlaceholderAPIEvaluate extends BukkitTaskType {
                                 try {
                                     numHas = Double.parseDouble(parse);
                                 } catch (NumberFormatException ex) {
-                                    PlaceholderAPIEvaluate.super.debug("Numeric operator was specified but evaluated string cannot be parsed into a double, continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                                    Evaluate.super.debug("Numeric operator was specified but evaluated string cannot be parsed into a double, continuing...", quest.getId(), task.getId(), player.getUniqueId());
                                     continue;
                                 }
 
 
-                                PlaceholderAPIEvaluate.super.debug("Evaluation = '" + parse + "'", quest.getId(), task.getId(), player.getUniqueId());
+                                Evaluate.super.debug("Evaluation = '" + parse + "'", quest.getId(), task.getId(), player.getUniqueId());
 
 
                                 taskProgress.setProgress(numHas);
                                 switch (operator) {
                                     case GREATER_THAN -> {
                                         if (numHas > numReq) {
-                                            PlaceholderAPIEvaluate.super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
+                                            Evaluate.super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                                             taskProgress.setCompleted(true);
                                         }
                                     }
                                     case LESS_THAN -> {
                                         if (numHas < numReq) {
-                                            PlaceholderAPIEvaluate.super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
+                                            Evaluate.super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                                             taskProgress.setCompleted(true);
                                         }
                                     }
                                     case GREATER_THAN_OR_EQUAL_TO -> {
                                         if (numHas >= numReq) {
-                                            PlaceholderAPIEvaluate.super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
+                                            Evaluate.super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                                             taskProgress.setCompleted(true);
                                         }
                                     }
                                     case LESS_THAN_OR_EQUAL_TO -> {
                                         if (numHas <= numReq) {
-                                            PlaceholderAPIEvaluate.super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
+                                            Evaluate.super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                                             taskProgress.setCompleted(true);
                                         }
                                     }

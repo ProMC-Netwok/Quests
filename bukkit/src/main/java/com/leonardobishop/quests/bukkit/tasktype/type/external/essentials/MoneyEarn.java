@@ -1,4 +1,4 @@
-package com.leonardobishop.quests.bukkit.tasktype.type.external;
+package com.leonardobishop.quests.bukkit.tasktype.type.external.essentials;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
@@ -7,51 +7,56 @@ import com.leonardobishop.quests.common.player.QPlayer;
 import com.leonardobishop.quests.common.player.questprogressfile.TaskProgress;
 import com.leonardobishop.quests.common.quest.Quest;
 import com.leonardobishop.quests.common.quest.Task;
-import net.brcdev.auctiongui.event.AuctionStartEvent;
+import net.ess3.api.events.UserBalanceUpdateEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 
-public class AuctionGUIPlusStart extends BukkitTaskType {
+import java.math.BigDecimal;
+
+public final class MoneyEarn extends BukkitTaskType {
+
     private final BukkitQuestsPlugin plugin;
 
-    public AuctionGUIPlusStart(BukkitQuestsPlugin plugin) {
-        super("auctionguiplus_start", TaskUtils.TASK_ATTRIBUTION_STRING, "AuctionGUI+ player start auction.");
+    public MoneyEarn(BukkitQuestsPlugin plugin) {
+        super("essentials_moneyearn", TaskUtils.TASK_ATTRIBUTION_STRING, "Earn a set amount of money.");
         this.plugin = plugin;
+
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
+        super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
     }
 
-    @EventHandler
-    public void onAuctionStart(AuctionStartEvent event) {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onMoneyEarn(UserBalanceUpdateEvent event) {
         QPlayer qPlayer = plugin.getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
-        // 检查玩家数据
-        if (qPlayer == null) return;
-        // 获取玩家实例
+        if (qPlayer == null) {
+            return;
+        }
+
         Player player = event.getPlayer();
-        // 遍历玩家所有激活的任务
+
         for (TaskUtils.PendingTask pendingTask : TaskUtils.getApplicableTasks(player, qPlayer, this)) {
             Quest quest = pendingTask.quest();
             Task task = pendingTask.task();
             TaskProgress taskProgress = pendingTask.taskProgress();
-            // Debug 玩家放置信息
-            super.debug("Player start auction", quest.getId(), task.getId(), player.getUniqueId());
 
-            Object amountObj = task.getConfigValue("amount");
-            int amount = amountObj == null ? event.getAuction().getItemStack().getAmount() : (int) amountObj;
+            super.debug("Player balance updated to " + event.getNewBalance(), quest.getId(), task.getId(), player.getUniqueId());
 
-            int curProgress = TaskUtils.getIntegerTaskProgress(taskProgress);
-            int newProgress = curProgress + event.getAuction().getItemStack().getAmount();
+            int earningsNeeded = (int) task.getConfigValue("amount");
 
+            BigDecimal current = (BigDecimal) taskProgress.getProgress();
+            if (current == null) {
+                current = new BigDecimal(0);
+            }
+            BigDecimal newProgress = current.add(event.getNewBalance().subtract(event.getOldBalance()));
             taskProgress.setProgress(newProgress);
-
             super.debug("Updating task progress (now " + newProgress + ")", quest.getId(), task.getId(), player.getUniqueId());
 
-            if (newProgress >= amount) {
+            if (newProgress.compareTo(BigDecimal.valueOf(earningsNeeded)) > 0) {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
-                taskProgress.setProgress(amount);
                 taskProgress.setCompleted(true);
             }
         }
-
-
     }
+
 }

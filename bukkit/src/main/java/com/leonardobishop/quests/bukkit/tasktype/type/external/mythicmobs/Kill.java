@@ -1,4 +1,4 @@
-package com.leonardobishop.quests.bukkit.tasktype.type.external;
+package com.leonardobishop.quests.bukkit.tasktype.type.external.mythicmobs;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
@@ -16,11 +16,11 @@ import org.bukkit.event.Listener;
 
 import java.lang.reflect.Field;
 
-public final class MythicMobsKill extends BukkitTaskType {
+public final class Kill extends BukkitTaskType {
 
     private final BukkitQuestsPlugin plugin;
 
-    public MythicMobsKill(BukkitQuestsPlugin plugin, String mythicMobsVersion) {
+    public Kill(BukkitQuestsPlugin plugin, String mythicMobsVersion) {
         super("mythicmobs_killing", TaskUtils.TASK_ATTRIBUTION_STRING, "Kill a set amount of a MythicMobs entity.");
         this.plugin = plugin;
 

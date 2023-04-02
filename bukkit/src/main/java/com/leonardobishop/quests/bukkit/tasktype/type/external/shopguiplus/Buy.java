@@ -1,4 +1,4 @@
-package com.leonardobishop.quests.bukkit.tasktype.type.external;
+package com.leonardobishop.quests.bukkit.tasktype.type.external.shopguiplus;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
@@ -18,15 +18,15 @@ import org.bukkit.event.EventPriority;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public final class ShopGUIPlusSell extends BukkitTaskType {
+public final class Buy extends BukkitTaskType {
 
     private final BukkitQuestsPlugin plugin;
     private Method getShopItemMethod;
     private Method getShopMethod;
     private Method getIdMethod;
 
-    public ShopGUIPlusSell(BukkitQuestsPlugin plugin, String shopGUIPlusVersion) {
-        super("shopguiplus_sell", TaskUtils.TASK_ATTRIBUTION_STRING, "Sell a given item to a ShopGUIPlus shop", "shopguiplus_sellcertain");
+    public Buy(BukkitQuestsPlugin plugin, String shopGUIPlusVersion) {
+        super("shopguiplus_buy", TaskUtils.TASK_ATTRIBUTION_STRING, "Purchase a given item from a ShopGUIPlus shop", "shopguiplus_buycertain");
         this.plugin = plugin;
 
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
@@ -53,7 +53,7 @@ public final class ShopGUIPlusSell extends BukkitTaskType {
     public void onShopPostTransaction(ShopPostTransactionEvent event) {
         ShopTransactionResult result = event.getResult();
         ShopAction shopAction = result.getShopAction();
-        if (shopAction != ShopAction.SELL && shopAction != ShopAction.SELL_ALL) {
+        if (shopAction != ShopAction.BUY) {
             return;
         }
 
@@ -84,7 +84,7 @@ public final class ShopGUIPlusSell extends BukkitTaskType {
             Task task = pendingTask.task();
             TaskProgress taskProgress = pendingTask.taskProgress();
 
-            super.debug("Player sold item (shop = " + shopId + ", item id = " + itemId + ")", quest.getId(), task.getId(), player.getUniqueId());
+            super.debug("Player bought item (shop = " + shopId + ", item id = " + itemId + ")", quest.getId(), task.getId(), player.getUniqueId());
 
             String taskShopId = (String) task.getConfigValue("shop-id");
             if (taskShopId == null || !taskShopId.equals(shopId)) {

@@ -1,4 +1,4 @@
-package com.leonardobishop.quests.bukkit.tasktype.type.external;
+package com.leonardobishop.quests.bukkit.tasktype.type.external.mmoitems;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
@@ -20,10 +20,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class MMOItemsCraft extends BukkitTaskType {
+public class Craft extends BukkitTaskType {
     private final BukkitQuestsPlugin plugin;
 
-    public MMOItemsCraft(BukkitQuestsPlugin plugin) {
+    public Craft(BukkitQuestsPlugin plugin) {
         super("mmoitems_craft", TaskUtils.TASK_ATTRIBUTION_STRING, "Place down a set of minions.");
         this.plugin = plugin;
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "mmoitems-type"));

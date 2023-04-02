@@ -1,4 +1,4 @@
-package com.leonardobishop.quests.bukkit.tasktype.type.external;
+package com.leonardobishop.quests.bukkit.tasktype.type.external.jetminions;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
@@ -7,56 +7,64 @@ import com.leonardobishop.quests.common.player.QPlayer;
 import com.leonardobishop.quests.common.player.questprogressfile.TaskProgress;
 import com.leonardobishop.quests.common.quest.Quest;
 import com.leonardobishop.quests.common.quest.Task;
-import net.ess3.api.events.UserBalanceUpdateEvent;
+import me.jet315.minions.events.PostMinionPlaceEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
-import java.math.BigDecimal;
-
-public final class EssentialsMoneyEarn extends BukkitTaskType {
+public class MinionPlace extends BukkitTaskType {
 
     private final BukkitQuestsPlugin plugin;
 
-    public EssentialsMoneyEarn(BukkitQuestsPlugin plugin) {
-        super("essentials_moneyearn", TaskUtils.TASK_ATTRIBUTION_STRING, "Earn a set amount of money.");
+    public MinionPlace(BukkitQuestsPlugin plugin) {
+        super("jetminions_place", TaskUtils.TASK_ATTRIBUTION_STRING, "Place down a set of minions.");
         this.plugin = plugin;
 
+        super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "minion-type"));
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
-        super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onMoneyEarn(UserBalanceUpdateEvent event) {
+    public void onMinionPlace(PostMinionPlaceEvent event) {
         QPlayer qPlayer = plugin.getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
+        // 检查玩家数据
         if (qPlayer == null) {
             return;
         }
-
+        // 获取玩家实例
         Player player = event.getPlayer();
-
+        // 遍历玩家所有激活的任务
         for (TaskUtils.PendingTask pendingTask : TaskUtils.getApplicableTasks(player, qPlayer, this)) {
             Quest quest = pendingTask.quest();
             Task task = pendingTask.task();
             TaskProgress taskProgress = pendingTask.taskProgress();
+            // Debug 玩家放置信息
+            super.debug("Player place JetMinions minion", quest.getId(), task.getId(), player.getUniqueId());
 
-            super.debug("Player balance updated to " + event.getNewBalance(), quest.getId(), task.getId(), player.getUniqueId());
+            Object typeObj = task.getConfigValue("minion-type");
+            String type = "";
+            if (typeObj instanceof String) type = (String) typeObj;
 
-            int earningsNeeded = (int) task.getConfigValue("amount");
-
-            BigDecimal current = (BigDecimal) taskProgress.getProgress();
-            if (current == null) {
-                current = new BigDecimal(0);
+            if (!type.equalsIgnoreCase(event.getMinion().getIdentifier())) {
+                super.debug("Minion identifier ('" + event.getMinion().getIdentifier() + "') does not match required id, continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                continue;
             }
-            BigDecimal newProgress = current.add(event.getNewBalance().subtract(event.getOldBalance()));
+
+            Object amountObj = task.getConfigValue("amount");
+            int amount = amountObj == null ? 1 : (int) amountObj;
+
+            int curProgress = TaskUtils.getIntegerTaskProgress(taskProgress);
+            int newProgress = curProgress + 1;
+
             taskProgress.setProgress(newProgress);
+
             super.debug("Updating task progress (now " + newProgress + ")", quest.getId(), task.getId(), player.getUniqueId());
 
-            if (newProgress.compareTo(BigDecimal.valueOf(earningsNeeded)) > 0) {
+            if (newProgress >= amount) {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
+                taskProgress.setProgress(amount);
                 taskProgress.setCompleted(true);
             }
         }
     }
-
 }

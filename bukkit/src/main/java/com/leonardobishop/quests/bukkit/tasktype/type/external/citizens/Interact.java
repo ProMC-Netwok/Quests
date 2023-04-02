@@ -1,4 +1,4 @@
-package com.leonardobishop.quests.bukkit.tasktype.type.external;
+package com.leonardobishop.quests.bukkit.tasktype.type.external.citizens;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
@@ -12,17 +12,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
-public final class CitizensInteract extends BukkitTaskType {
+public final class Interact extends BukkitTaskType {
 
     private final BukkitQuestsPlugin plugin;
 
-    public CitizensInteract(BukkitQuestsPlugin plugin) {
+    public Interact(BukkitQuestsPlugin plugin) {
         super("citizens_interact", TaskUtils.TASK_ATTRIBUTION_STRING, "Interact with an NPC to complete the quest.");
         this.plugin = plugin;
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "npc-id"));
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onNPCClick(NPCRightClickEvent event) {
         QPlayer qPlayer = plugin.getPlayerManager().getPlayer(event.getClicker().getUniqueId());
         if (qPlayer == null) return;

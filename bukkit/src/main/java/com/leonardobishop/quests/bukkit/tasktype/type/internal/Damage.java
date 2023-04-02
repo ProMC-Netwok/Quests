@@ -14,11 +14,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-public final class DealDamage extends BukkitTaskType {
+public final class Damage extends BukkitTaskType {
 
     private final BukkitQuestsPlugin plugin;
 
-    public DealDamage(BukkitQuestsPlugin plugin) {
+    public Damage(BukkitQuestsPlugin plugin) {
         super("dealdamage", TaskUtils.TASK_ATTRIBUTION_STRING, "Deal a certain amount of damage.");
         this.plugin = plugin;
 
@@ -28,7 +28,7 @@ public final class DealDamage extends BukkitTaskType {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onDamage(EntityDamageByEntityEvent event) {
+    public void onAttack(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player)) {
             return;
         }

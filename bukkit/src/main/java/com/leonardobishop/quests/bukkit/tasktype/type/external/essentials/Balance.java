@@ -1,4 +1,4 @@
-package com.leonardobishop.quests.bukkit.tasktype.type.external;
+package com.leonardobishop.quests.bukkit.tasktype.type.external.essentials;
 
 import com.earth2me.essentials.Essentials;
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
@@ -19,11 +19,11 @@ import org.bukkit.event.EventPriority;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public final class EssentialsBalance extends BukkitTaskType {
+public final class Balance extends BukkitTaskType {
 
     private final BukkitQuestsPlugin plugin;
 
-    public EssentialsBalance(BukkitQuestsPlugin plugin) {
+    public Balance(BukkitQuestsPlugin plugin) {
         super("essentials_balance", TaskUtils.TASK_ATTRIBUTION_STRING, "Reach a set amount of money.");
         this.plugin = plugin;
 

@@ -1,4 +1,4 @@
-package com.leonardobishop.quests.bukkit.tasktype.type.external;
+package com.leonardobishop.quests.bukkit.tasktype.type.external.auctionguiplus;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
@@ -7,30 +7,24 @@ import com.leonardobishop.quests.common.player.QPlayer;
 import com.leonardobishop.quests.common.player.questprogressfile.TaskProgress;
 import com.leonardobishop.quests.common.quest.Quest;
 import com.leonardobishop.quests.common.quest.Task;
-import me.jet315.minions.events.PostMinionPlaceEvent;
+import net.brcdev.auctiongui.event.AuctionStartEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 
-public class JetMinionsPlace extends BukkitTaskType {
-
+public class AuctionStart extends BukkitTaskType {
     private final BukkitQuestsPlugin plugin;
 
-    public JetMinionsPlace(BukkitQuestsPlugin plugin) {
-        super("jetminions_place", TaskUtils.TASK_ATTRIBUTION_STRING, "Place down a set of minions.");
+    public AuctionStart(BukkitQuestsPlugin plugin) {
+        super("auctionguiplus_start", TaskUtils.TASK_ATTRIBUTION_STRING, "AuctionGUI+ player start auction.");
         this.plugin = plugin;
-
-        super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "minion-type"));
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onNPCClick(PostMinionPlaceEvent event) {
+    @EventHandler
+    public void onAuctionStart(AuctionStartEvent event) {
         QPlayer qPlayer = plugin.getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
         // 检查玩家数据
-        if (qPlayer == null) {
-            return;
-        }
+        if (qPlayer == null) return;
         // 获取玩家实例
         Player player = event.getPlayer();
         // 遍历玩家所有激活的任务
@@ -39,22 +33,13 @@ public class JetMinionsPlace extends BukkitTaskType {
             Task task = pendingTask.task();
             TaskProgress taskProgress = pendingTask.taskProgress();
             // Debug 玩家放置信息
-            super.debug("Player place JetMinions minion", quest.getId(), task.getId(), player.getUniqueId());
-
-            Object typeObj = task.getConfigValue("minion-type");
-            String type = "";
-            if (typeObj instanceof String) type = (String) typeObj;
-
-            if (!type.equalsIgnoreCase(event.getMinion().getIdentifier())) {
-                super.debug("Minion identifier ('" + event.getMinion().getIdentifier() + "') does not match required id, continuing...", quest.getId(), task.getId(), player.getUniqueId());
-                continue;
-            }
+            super.debug("Player start auction", quest.getId(), task.getId(), player.getUniqueId());
 
             Object amountObj = task.getConfigValue("amount");
-            int amount = amountObj == null ? 1 : (int) amountObj;
+            int amount = amountObj == null ? event.getAuction().getItemStack().getAmount() : (int) amountObj;
 
             int curProgress = TaskUtils.getIntegerTaskProgress(taskProgress);
-            int newProgress = curProgress + 1;
+            int newProgress = curProgress + event.getAuction().getItemStack().getAmount();
 
             taskProgress.setProgress(newProgress);
 
@@ -66,5 +51,7 @@ public class JetMinionsPlace extends BukkitTaskType {
                 taskProgress.setCompleted(true);
             }
         }
+
+
     }
 }
