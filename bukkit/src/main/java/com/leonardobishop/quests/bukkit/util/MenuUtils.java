@@ -61,9 +61,7 @@ public class MenuUtils {
      */
     public static void openMainMenu(BukkitQuestsPlugin plugin, QPlayer qPlayer) {
         Player player = Bukkit.getPlayer(qPlayer.getPlayerUUID());
-        if (player == null) {
-            return;
-        }
+        if (player == null) return;
 
         if (plugin.getQuestsConfig().getBoolean("options.categories-enabled")) {
             CategoryQMenu categoryQMenu = new CategoryQMenu(plugin, qPlayer);
@@ -77,11 +75,6 @@ public class MenuUtils {
             QuestQMenu questQMenu = new QuestQMenu(plugin, qPlayer, quests, null, null);
             plugin.getMenuController().openMenu(player, questQMenu);
         }
-//        } else {
-//            DailyQMenu dailyQMenu = new DailyQMenu(plugin, this);
-//            dailyQMenu.populate();
-//            plugin.getMenuController().openMenu(player, dailyQMenu, 1);
-//        }
     }
 
     public static void openQuestCategory(BukkitQuestsPlugin plugin, QPlayer qPlayer, Category category, CategoryQMenu superMenu) {

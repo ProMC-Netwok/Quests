@@ -35,7 +35,6 @@ public class MenuController implements Listener {
 
     public void openMenu(HumanEntity player, QMenu qMenu) {
         SoundUtils.playSoundForPlayer((Player) player, plugin.getQuestsConfig().getString("options.sounds.gui.open"));
-//        Bukkit.getScheduler().runTaskLater(plugin, () -> SoundUtils.playSoundForPlayer((Player) player, plugin.getQuestsConfig().getString("options.sounds.gui.open")), 1L);
         player.openInventory(qMenu.draw());
         tracker.put(player.getUniqueId(), qMenu);
     }
@@ -58,13 +57,11 @@ public class MenuController implements Listener {
 
             QMenu qMenu = tracker.get(player.getUniqueId());
             MenuElement menuElement = qMenu.getMenuElementAt(event.getSlot());
-            if (menuElement == null) {
-                return;
-            }
+            if (menuElement == null) return;
+
             ClickResult result = menuElement.handleClick(event.getClick());
-            if (result == ClickResult.DO_NOTHING) {
-                return;
-            }
+            if (result == ClickResult.DO_NOTHING) return;
+
             SoundUtils.playSoundForPlayer(player, plugin.getQuestsConfig().getString("options.sounds.gui.interact"));
             if (result == ClickResult.REFRESH_PANE) {
                 player.openInventory(qMenu.draw());
@@ -74,26 +71,4 @@ public class MenuController implements Listener {
             }
         }
     }
-
-//    /**
-//     * Open the started menu for the player
-//     *
-//     * @param qPlayer player
-//     */
-//    public void openStartedQuests(QPlayer qPlayer) {
-//        Player player = Bukkit.getPlayer(qPlayer.getPlayerUUID());
-//        if (player == null) {
-//            return;
-//        }
-//
-//        StartedQMenu startedQMenu = new StartedQMenu(plugin, qPlayer);
-//        List<QuestSortWrapper> quests = new ArrayList<>();
-//        for (Map.Entry<String, Quest> entry : plugin.getQuestManager().getQuests().entrySet()) {
-//            quests.add(new QuestSortWrapper(plugin, entry.getValue()));
-//        }
-//        startedQMenu.populate(quests);
-//
-//        openMenu(player, startedQMenu, 1);
-//    }
-
 }

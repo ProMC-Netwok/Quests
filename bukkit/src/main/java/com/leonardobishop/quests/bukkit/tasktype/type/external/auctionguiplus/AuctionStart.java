@@ -7,9 +7,10 @@ import com.leonardobishop.quests.common.player.QPlayer;
 import com.leonardobishop.quests.common.player.questprogressfile.TaskProgress;
 import com.leonardobishop.quests.common.quest.Quest;
 import com.leonardobishop.quests.common.quest.Task;
-import net.brcdev.auctiongui.event.AuctionStartEvent;
+import net.brcdev.auctiongui.event.AuctionPostStartEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 
 public class AuctionStart extends BukkitTaskType {
     private final BukkitQuestsPlugin plugin;
@@ -20,8 +21,8 @@ public class AuctionStart extends BukkitTaskType {
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
     }
 
-    @EventHandler
-    public void onAuctionStart(AuctionStartEvent event) {
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onAuctionStart(AuctionPostStartEvent event) {
         QPlayer qPlayer = plugin.getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
         // 检查玩家数据
         if (qPlayer == null) return;

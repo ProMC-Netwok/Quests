@@ -2,10 +2,7 @@ package com.leonardobishop.quests.bukkit.menu;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.config.BukkitQuestsConfig;
-import com.leonardobishop.quests.bukkit.menu.element.CustomMenuElement;
-import com.leonardobishop.quests.bukkit.menu.element.MenuElement;
-import com.leonardobishop.quests.bukkit.menu.element.PageNextMenuElement;
-import com.leonardobishop.quests.bukkit.menu.element.PagePrevMenuElement;
+import com.leonardobishop.quests.bukkit.menu.element.*;
 import com.leonardobishop.quests.bukkit.util.MenuUtils;
 import com.leonardobishop.quests.common.player.QPlayer;
 import org.bukkit.Bukkit;
@@ -17,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public abstract class PaginatedQMenu extends QMenu {
 
@@ -64,7 +60,7 @@ public abstract class PaginatedQMenu extends QMenu {
         this.maxPage = maxPage;
     }
 
-    public void populate(String path, List<MenuElement> questElements, MenuElement backMenuElement) {
+    public void populate(String path, List<MenuElement> questElements, BackMenuElement backMenuElement) {
         Player player = Bukkit.getPlayer(owner.getPlayerUUID());
         // 如果玩家不在线
         if (player == null) return;
@@ -91,7 +87,7 @@ public abstract class PaginatedQMenu extends QMenu {
                     } else continue;
 
                     for (String slotString : slots) {
-                        if (Pattern.matches("[0-9]+", slotString)) {
+                        if (slotString.matches("[0-9]+")) {
                             int slot = Integer.parseInt(slotString);
                             if (!isAnime) {
                                 staticElement[slot] = menuElement;
@@ -107,20 +103,24 @@ public abstract class PaginatedQMenu extends QMenu {
         // 获取菜单最大尺寸(index)
         // 如果存在返回按键
         // 则减去 9 (一行) 如果没有则减去 0
+        // 0 0 0 0 0 0 0 0 0
         int maxSize = pageSize - (backMenuElement == null ? 0 : 9);
         // 获取任务配置
         BukkitQuestsConfig config = (BukkitQuestsConfig) plugin.getQuestsConfig();
 
         // 不知道怎么改了... 还是改回来吧
+        // sizea 菜单元素位置最大值
         int sizea = menuElements.isEmpty() ? 0 : Collections.max(menuElements.keySet());
+        // sizeb 任务元素 + 菜单元素 + 静态元素数量
         int sizeb = menuElements.size() + questElements.size() + staticCount;
+
         if (sizea + 1 > maxSize || sizeb > maxSize) {
             MenuElement nextPageElement = new PageNextMenuElement(config, this);
-            staticElement[52] = nextPageElement;
+            staticElement[maxSize + 1] = nextPageElement;
             MenuElement prevPageElement = new PagePrevMenuElement(config, this);
-            staticElement[46] = prevPageElement;
-            staticElement[49] = backMenuElement;
-        } else if (backMenuElement != null) {
+            staticElement[maxSize + 7] = prevPageElement;
+        }
+        if (backMenuElement != null) {
             int slot = MenuUtils.getHigherOrEqualMultiple(maxSize, 9);
             staticElement[slot + 4] = backMenuElement;
         }

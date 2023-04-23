@@ -47,7 +47,6 @@ public final class Farm extends BukkitTaskType {
         if (!(blockData instanceof Ageable crop && crop.getAge() == crop.getMaximumAge())) {
             return;
         }
-
         if (player.hasMetadata("NPC")) {
             return;
         }

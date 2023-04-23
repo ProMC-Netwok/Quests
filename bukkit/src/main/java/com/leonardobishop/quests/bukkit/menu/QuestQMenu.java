@@ -29,8 +29,7 @@ public class QuestQMenu extends PaginatedQMenu {
         BukkitQuestsConfig config = (BukkitQuestsConfig) plugin.getQuestsConfig();
         this.categoryName = categoryName;
 
-        MenuElement backMenuElement = new BackMenuElement(config, owner.getPlayerUUID(), plugin.getMenuController(), categoryQMenu);
-
+        BackMenuElement backMenuElement = new BackMenuElement(config, owner.getPlayerUUID(), plugin.getMenuController(), categoryQMenu);
         List<MenuElement> filteredQuests = new ArrayList<>();
         for (Quest quest : quests) {
             if (config.getBoolean("options.gui-hide-locked")) {
@@ -49,12 +48,15 @@ public class QuestQMenu extends PaginatedQMenu {
         }
 
         String path;
-        if (categoryName != null) {
-            path = "custom-elements.c:" + categoryName;
+        if (categoryName != null) path = "custom-elements.c:" + categoryName;
+        else path = "custom-elements.quests";
+
+        if (categoryQMenu == null) {
+            super.populate(path, filteredQuests, null);
         } else {
-            path = "custom-elements.quests";
+            super.populate(path, filteredQuests, backMenuElement);
         }
-        super.populate(path, filteredQuests, backMenuElement);
+
     }
 
     public String getCategoryName() {
