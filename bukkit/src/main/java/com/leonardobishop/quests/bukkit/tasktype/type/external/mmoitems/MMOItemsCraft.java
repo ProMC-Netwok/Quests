@@ -20,14 +20,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class Craft extends BukkitTaskType {
+public class MMOItemsCraft extends BukkitTaskType {
     private final BukkitQuestsPlugin plugin;
 
-    public Craft(BukkitQuestsPlugin plugin) {
+    public MMOItemsCraft(BukkitQuestsPlugin plugin) {
         super("mmoitems_craft", TaskUtils.TASK_ATTRIBUTION_STRING, "Place down a set of minions.");
         this.plugin = plugin;
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "mmoitems-type"));
-        super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
     }
 
@@ -50,6 +49,7 @@ public class Craft extends BukkitTaskType {
             Quest quest = pendingTask.quest();
             Task task = pendingTask.task();
             TaskProgress taskProgress = pendingTask.taskProgress();
+
             // Debug 玩家放置信息
             super.debug("Player craft mmoitems", quest.getId(), task.getId(), player.getUniqueId());
 
@@ -61,6 +61,7 @@ public class Craft extends BukkitTaskType {
                 super.debug("MMOItems type ('" + NBTItem.get(item).getType() + "') does not match required type, continuing...", quest.getId(), task.getId(), player.getUniqueId());
                 continue;
             }
+
             // 判断物品ID 如果config里的配置获取的是空值则跳过该判断
             Object idObj = task.getConfigValue("mmoitems-id");
             String id = "";
@@ -74,7 +75,7 @@ public class Craft extends BukkitTaskType {
 
 
             Object amountObj = task.getConfigValue("amount");
-            int amount = amountObj == null ? item.getAmount() : (int) amountObj;
+            int amount = amountObj == null ? 1 : (int) amountObj;
 
             int curProgress = TaskUtils.getIntegerTaskProgress(taskProgress);
             int newProgress = curProgress + item.getAmount();
@@ -134,7 +135,7 @@ public class Craft extends BukkitTaskType {
 
 
             Object amountObj = task.getConfigValue("amount");
-            int amount = amountObj == null ? item.getAmount() : (int) amountObj;
+            int amount = amountObj == null ? 1 : (int) amountObj;
 
             int curProgress = TaskUtils.getIntegerTaskProgress(taskProgress);
             int newProgress = curProgress + item.getAmount();
@@ -200,7 +201,7 @@ public class Craft extends BukkitTaskType {
 
 
             Object amountObj = task.getConfigValue("amount");
-            int amount = amountObj == null ? item.getAmount() : (int) amountObj;
+            int amount = amountObj == null ? 1 : (int) amountObj;
 
             int curProgress = TaskUtils.getIntegerTaskProgress(taskProgress);
             int newProgress = curProgress + item.getAmount();

@@ -19,8 +19,6 @@ public class MinionPlace extends BukkitTaskType {
     public MinionPlace(BukkitQuestsPlugin plugin) {
         super("jetminions_place", TaskUtils.TASK_ATTRIBUTION_STRING, "Place down a set of minions.");
         this.plugin = plugin;
-
-        super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "minion-type"));
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
     }
 
@@ -38,15 +36,14 @@ public class MinionPlace extends BukkitTaskType {
             Quest quest = pendingTask.quest();
             Task task = pendingTask.task();
             TaskProgress taskProgress = pendingTask.taskProgress();
-            // Debug 玩家放置信息
-            super.debug("Player place JetMinions minion", quest.getId(), task.getId(), player.getUniqueId());
+            // super.debug("Player place JetMinions minion", quest.getId(), task.getId(), player.getUniqueId());
 
             Object typeObj = task.getConfigValue("minion-type");
             String type = "";
             if (typeObj instanceof String) type = (String) typeObj;
 
-            if (!type.equalsIgnoreCase(event.getMinion().getIdentifier())) {
-                super.debug("Minion identifier ('" + event.getMinion().getIdentifier() + "') does not match required id, continuing...", quest.getId(), task.getId(), player.getUniqueId());
+            if (!type.equalsIgnoreCase("") && !type.equalsIgnoreCase(event.getMinion().getIdentifier())) {
+                //super.debug("Minion identifier ('" + event.getMinion().getIdentifier() + "') does not match required id, continuing...", quest.getId(), task.getId(), player.getUniqueId());
                 continue;
             }
 
@@ -58,10 +55,10 @@ public class MinionPlace extends BukkitTaskType {
 
             taskProgress.setProgress(newProgress);
 
-            super.debug("Updating task progress (now " + newProgress + ")", quest.getId(), task.getId(), player.getUniqueId());
+            //super.debug("Updating task progress (now " + newProgress + ")", quest.getId(), task.getId(), player.getUniqueId());
 
             if (newProgress >= amount) {
-                super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
+                //super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setProgress(amount);
                 taskProgress.setCompleted(true);
             }

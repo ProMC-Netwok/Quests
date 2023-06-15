@@ -2,14 +2,19 @@ package com.leonardobishop.quests.bukkit.tasktype.type.internal;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
+import com.leonardobishop.quests.bukkit.tasktype.type.external.mythicmobs.Kill;
 import com.leonardobishop.quests.bukkit.util.TaskUtils;
 import com.leonardobishop.quests.common.player.QPlayer;
 import com.leonardobishop.quests.common.player.questprogressfile.TaskProgress;
 import com.leonardobishop.quests.common.quest.Quest;
 import com.leonardobishop.quests.common.quest.Task;
+import net.Indyuce.mmocore.api.event.CustomBlockMineEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
@@ -29,27 +34,42 @@ public final class BlockBreak extends BukkitTaskType {
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "check-coreprotect-time"));
         super.addConfigValidator(TaskUtils.useBooleanConfigValidator(this, "reverse-if-placed"));
         super.addConfigValidator(TaskUtils.useBooleanConfigValidator(this, "use-similar-blocks"));
+
+        if (Bukkit.getPluginManager().isPluginEnabled("MMOCore"))
+            plugin.getServer().getPluginManager().registerEvents(new CustomBlockMineListener(), plugin);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        if (event.getPlayer().hasMetadata("NPC")) return;
+        handle(event.getPlayer(), event.getBlock());
+    }
 
-        QPlayer qPlayer = plugin.getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
-        if (qPlayer == null) {
-            return;
+    /**
+     * MMOCore 提供的自定义矿物破坏事件
+     * 用于自定义掉落物相关功能的触发
+     */
+    private final class CustomBlockMineListener implements Listener {
+        @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+        public void onCustomMine(CustomBlockMineEvent event) {
+            handle(event.getPlayer(), event.getBlock());
         }
+    }
 
-        Player player = event.getPlayer();
 
-        for (TaskUtils.PendingTask pendingTask : TaskUtils.getApplicableTasks(event.getPlayer(), qPlayer, this, TaskUtils.TaskConstraint.WORLD)) {
+    private void handle(Player player, Block block) {
+        if (player.hasMetadata("NPC")) return;
+
+        QPlayer qPlayer = plugin.getPlayerManager().getPlayer(player.getUniqueId());
+        if (qPlayer == null) return;
+
+        for (TaskUtils.PendingTask pendingTask : TaskUtils.getApplicableTasks(player, qPlayer, this, TaskUtils.TaskConstraint.WORLD)) {
             Quest quest = pendingTask.quest();
             Task task = pendingTask.task();
             TaskProgress taskProgress = pendingTask.taskProgress();
 
-            super.debug("Player mined block " + event.getBlock().getType(), quest.getId(), task.getId(), event.getPlayer().getUniqueId());
+            super.debug("Player mined block " + block.getType(), quest.getId(), task.getId(), player.getUniqueId());
 
-            if (TaskUtils.matchBlock(this, pendingTask, event.getBlock(), player.getUniqueId())) {
+            if (TaskUtils.matchBlock(this, pendingTask, block, player.getUniqueId())) {
                 boolean coreProtectEnabled = (boolean) task.getConfigValue("check-coreprotect", false);
                 int coreProtectTime = (int) task.getConfigValue("check-coreprotect-time", 3600);
 
@@ -71,7 +91,7 @@ public final class BlockBreak extends BukkitTaskType {
 
                 if (coreProtectEnabled && plugin.getCoreProtectHook() != null) {
                     super.debug("Running CoreProtect lookup (may take a while)", quest.getId(), task.getId(), player.getUniqueId());
-                    plugin.getCoreProtectHook().checkBlock(event.getBlock(), coreProtectTime).thenAccept(result -> {
+                    plugin.getCoreProtectHook().checkBlock(block, coreProtectTime).thenAccept(result -> {
                         if (result) {
                             super.debug("CoreProtect lookup indicates this is a player placed block, continuing...", quest.getId(), task.getId(), player.getUniqueId());
                         } else {
@@ -89,6 +109,7 @@ public final class BlockBreak extends BukkitTaskType {
             }
         }
     }
+
 
     // subtract if enabled
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

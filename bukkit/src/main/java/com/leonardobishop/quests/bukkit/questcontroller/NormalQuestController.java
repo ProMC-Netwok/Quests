@@ -149,9 +149,6 @@ public class NormalQuestController implements QuestController {
         Player p = Bukkit.getPlayer(qPlayer.getPlayerUUID());
         QuestProgress questProgress = qPlayer.getQuestProgressFile().getQuestProgress(quest);
         if (!quest.isRepeatable() && questProgress.isCompletedBefore()) {
-            //if (playerUUID != null) {
-            // ???
-            //}
             return QuestStartResult.QUEST_ALREADY_COMPLETED;
         }
         long cooldown = qPlayer.getQuestProgressFile().getCooldownFor(quest);

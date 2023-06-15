@@ -31,11 +31,13 @@ import com.leonardobishop.quests.bukkit.runnable.QuestsAutoSaveRunnable;
 import com.leonardobishop.quests.bukkit.storage.MySqlStorageProvider;
 import com.leonardobishop.quests.bukkit.storage.YamlStorageProvider;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskTypeManager;
-import com.leonardobishop.quests.bukkit.tasktype.type.external.citizens.Interact;
+import com.leonardobishop.quests.bukkit.tasktype.type.external.auctionguiplus.AuctionStart;
+import com.leonardobishop.quests.bukkit.tasktype.type.external.citizens.NPCInteract;
+import com.leonardobishop.quests.bukkit.tasktype.type.external.crazycrates.OpenCrate;
 import com.leonardobishop.quests.bukkit.tasktype.type.external.essentials.Balance;
 import com.leonardobishop.quests.bukkit.tasktype.type.external.essentials.MoneyEarn;
 import com.leonardobishop.quests.bukkit.tasktype.type.external.jetminions.MinionPlace;
-import com.leonardobishop.quests.bukkit.tasktype.type.external.mmoitems.Craft;
+import com.leonardobishop.quests.bukkit.tasktype.type.external.mmoitems.MMOItemsCraft;
 import com.leonardobishop.quests.bukkit.tasktype.type.external.mythicmobs.Kill;
 import com.leonardobishop.quests.bukkit.tasktype.type.external.placeholdersapi.Evaluate;
 import com.leonardobishop.quests.bukkit.tasktype.type.external.shopguiplus.Buy;
@@ -307,10 +309,10 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             taskTypeManager.registerTaskType(new Permission(this));
             taskTypeManager.registerTaskType(new Distance(this));
             taskTypeManager.registerTaskType(new Command(this));
-            taskTypeManager.registerTaskType(new com.leonardobishop.quests.bukkit.tasktype.type.internal.Craft(this));
+            taskTypeManager.registerTaskType(new Craft(this));
             taskTypeManager.registerTaskType(new BucketEmpty(this));
             taskTypeManager.registerTaskType(new BucketFill(this));
-            taskTypeManager.registerTaskType(new com.leonardobishop.quests.bukkit.tasktype.type.internal.Interact(this));
+            taskTypeManager.registerTaskType(new Interact(this));
             try {
                 Class.forName("org.bukkit.event.inventory.SmithItemEvent");
                 taskTypeManager.registerTaskType(new Smith(this));
@@ -325,7 +327,7 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             } catch (ClassNotFoundException ignored) { } // server version cannot support task type
 
             if (Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
-                taskTypeManager.registerTaskType(new Interact(this));
+                taskTypeManager.registerTaskType(new NPCInteract(this));
             }
             if (Bukkit.getPluginManager().isPluginEnabled("MythicMobs")) {
                 String mythicMobsVersion = Bukkit.getPluginManager().getPlugin("MythicMobs").getDescription().getVersion();
@@ -350,7 +352,13 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
                 taskTypeManager.registerTaskType(new MinionPlace(this));
             }
             if (Bukkit.getPluginManager().isPluginEnabled("MMOItems")) {
-                taskTypeManager.registerTaskType(new Craft(this));
+                taskTypeManager.registerTaskType(new MMOItemsCraft(this));
+            }
+            if (Bukkit.getPluginManager().isPluginEnabled("CrazyCrates")) {
+                taskTypeManager.registerTaskType(new OpenCrate(this));
+            }
+            if (Bukkit.getPluginManager().isPluginEnabled("AuctionGUIPlus")) {
+                taskTypeManager.registerTaskType(new AuctionStart(this));
             }
 
 

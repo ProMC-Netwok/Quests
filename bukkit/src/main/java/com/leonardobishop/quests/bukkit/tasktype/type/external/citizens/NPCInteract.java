@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
-public final class Interact extends BukkitTaskType {
+public final class NPCInteract extends BukkitTaskType {
 
     private final BukkitQuestsPlugin plugin;
 
-    public Interact(BukkitQuestsPlugin plugin) {
+    public NPCInteract(BukkitQuestsPlugin plugin) {
         super("citizens_interact", TaskUtils.TASK_ATTRIBUTION_STRING, "Interact with an NPC to complete the quest.");
         this.plugin = plugin;
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "npc-id"));

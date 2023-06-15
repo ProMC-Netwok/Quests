@@ -73,6 +73,8 @@ dependencies {
     compileOnly 'io.lumine.xikage:MythicMobs:4.12.0'
     // MythicMobs 5
     compileOnly 'io.lumine:Mythic-Dist:5.2.0'
+    // MMOCore
+    compileOnly 'net.Indyuce:MMOCore-API:1.12-SNAPSHOT'
     // NuVotifier
     compileOnly 'com.vexsoftware:NuVotifier:2.7.3'
     // PlaceholderAPI
