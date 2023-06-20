@@ -43,7 +43,7 @@ public final class Brew extends BukkitTaskType {
     }
 
     @Override
-    public void onReady() {
+    public void onLoad() {
         fixedQuestItemCache.clear();
     }
 

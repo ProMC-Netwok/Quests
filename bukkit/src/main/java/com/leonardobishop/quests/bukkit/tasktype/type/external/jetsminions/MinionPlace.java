@@ -1,4 +1,4 @@
-package com.leonardobishop.quests.bukkit.tasktype.type.external.jetminions;
+package com.leonardobishop.quests.bukkit.tasktype.type.external.jetsminions;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
@@ -17,12 +17,12 @@ public class MinionPlace extends BukkitTaskType {
     private final BukkitQuestsPlugin plugin;
 
     public MinionPlace(BukkitQuestsPlugin plugin) {
-        super("jetminions_place", TaskUtils.TASK_ATTRIBUTION_STRING, "Place down a set of minions.");
+        super("jetsminions_place", TaskUtils.TASK_ATTRIBUTION_STRING, "Place down a set of minions.");
         this.plugin = plugin;
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler
     public void onMinionPlace(PostMinionPlaceEvent event) {
         QPlayer qPlayer = plugin.getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
         // 检查玩家数据
@@ -33,7 +33,6 @@ public class MinionPlace extends BukkitTaskType {
         Player player = event.getPlayer();
         // 遍历玩家所有激活的任务
         for (TaskUtils.PendingTask pendingTask : TaskUtils.getApplicableTasks(player, qPlayer, this)) {
-            Quest quest = pendingTask.quest();
             Task task = pendingTask.task();
             TaskProgress taskProgress = pendingTask.taskProgress();
             // super.debug("Player place JetMinions minion", quest.getId(), task.getId(), player.getUniqueId());

@@ -46,7 +46,7 @@ public final class Smelt extends BukkitTaskType {
     }
 
     @Override
-    public void onReady() {
+    public void onLoad() {
         fixedQuestItemCache.clear();
     }
 

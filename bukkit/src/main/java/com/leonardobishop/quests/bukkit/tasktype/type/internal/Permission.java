@@ -25,7 +25,7 @@ public final class Permission extends BukkitTaskType {
     }
 
     @Override
-    public void onReady() {
+    public void onLoad() {
         this.poll = new BukkitRunnable() {
             @Override
             public void run() {

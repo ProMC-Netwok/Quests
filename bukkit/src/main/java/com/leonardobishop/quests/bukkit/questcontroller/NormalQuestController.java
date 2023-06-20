@@ -133,13 +133,6 @@ public class NormalQuestController implements QuestController {
                 }
                 SoundUtils.playSoundForPlayer(player, plugin.getQuestsConfig().getString("options.sounds.quest-start"));
             }
-            for (Task task : quest.getTasks()) {
-                try {
-                    plugin.getTaskTypeManager().getTaskType(task.getType()).onStart(quest, task, qPlayer.getPlayerUUID());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return code;
     }

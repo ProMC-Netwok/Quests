@@ -34,9 +34,7 @@ import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskTypeManager;
 import com.leonardobishop.quests.bukkit.tasktype.type.external.auctionguiplus.AuctionStart;
 import com.leonardobishop.quests.bukkit.tasktype.type.external.citizens.NPCInteract;
 import com.leonardobishop.quests.bukkit.tasktype.type.external.crazycrates.OpenCrate;
-import com.leonardobishop.quests.bukkit.tasktype.type.external.essentials.Balance;
-import com.leonardobishop.quests.bukkit.tasktype.type.external.essentials.MoneyEarn;
-import com.leonardobishop.quests.bukkit.tasktype.type.external.jetminions.MinionPlace;
+import com.leonardobishop.quests.bukkit.tasktype.type.external.jetsminions.MinionPlace;
 import com.leonardobishop.quests.bukkit.tasktype.type.external.mmoitems.MMOItemsCraft;
 import com.leonardobishop.quests.bukkit.tasktype.type.external.mythicmobs.Kill;
 import com.leonardobishop.quests.bukkit.tasktype.type.external.placeholdersapi.Evaluate;
@@ -338,17 +336,13 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                 taskTypeManager.registerTaskType(new Evaluate(this));
             }
-            if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
-                taskTypeManager.registerTaskType(new MoneyEarn(this));
-                taskTypeManager.registerTaskType(new Balance(this));
-            }
             if (Bukkit.getPluginManager().isPluginEnabled("ShopGUIPlus")) {
                 // not tested
                 String shopGUIPlusVersion = Bukkit.getPluginManager().getPlugin("ShopGUIPlus").getDescription().getVersion();
                 taskTypeManager.registerTaskType(new Buy(this, shopGUIPlusVersion));
                 taskTypeManager.registerTaskType(new Sell(this, shopGUIPlusVersion));
             }
-            if (Bukkit.getPluginManager().isPluginEnabled("JetMinions")) {
+            if (Bukkit.getPluginManager().isPluginEnabled("JetsMinions")) {
                 taskTypeManager.registerTaskType(new MinionPlace(this));
             }
             if (Bukkit.getPluginManager().isPluginEnabled("MMOItems")) {
@@ -415,7 +409,7 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
 
             for (TaskType taskType : taskTypeManager.getTaskTypes()) {
                 try {
-                    taskType.onReady();
+                    taskType.onLoad();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -492,21 +486,6 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
         File questsDirectory = new File(this.getDataFolder() + File.separator + "quests");
         if (!questsDirectory.exists() && !questsDirectory.isDirectory()) {
             questsDirectory.mkdir();
-
-//            ArrayList<String> examples = new ArrayList<>();
-//            examples.add("example1.yml");
-//            examples.add("example2.yml");
-//            examples.add("example3.yml");
-//            examples.add("example4.yml");
-//            examples.add("example5.yml");
-//            examples.add("example6.yml");
-//            examples.add("example7.yml");
-//            examples.add("README.txt");
-//
-//            for (String name : examples) {
-//                File file = new File(this.getDataFolder() + File.separator + "quests" + File.separator + name);
-//                writeResourceToFile("resources/bukkit/quests/" + name, file);
-//            }
         }
 
         File itemsDirectory = new File(this.getDataFolder() + File.separator + "items");

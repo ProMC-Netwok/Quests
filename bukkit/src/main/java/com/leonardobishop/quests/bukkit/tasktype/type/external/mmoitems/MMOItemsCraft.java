@@ -66,11 +66,9 @@ public class MMOItemsCraft extends BukkitTaskType {
             Object idObj = task.getConfigValue("mmoitems-id");
             String id = "";
             if (idObj instanceof String) id = (String) idObj;
-            if (!id.equals("")) {
-                if (!id.equalsIgnoreCase(NBTItem.get(item).getString("MMOITEMS_ITEM_ID"))) {
-                    super.debug("MMOItems id ('" + NBTItem.get(item).getString("MMOITEMS_ITEM_ID") + "') does not match required type, continuing...", quest.getId(), task.getId(), player.getUniqueId());
-                    continue;
-                }
+            if (!id.equals("") && !id.equalsIgnoreCase(NBTItem.get(item).getString("MMOITEMS_ITEM_ID"))) {
+                super.debug("MMOItems id ('" + NBTItem.get(item).getString("MMOITEMS_ITEM_ID") + "') does not match required type, continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                continue;
             }
 
 
@@ -126,11 +124,9 @@ public class MMOItemsCraft extends BukkitTaskType {
             Object idObj = task.getConfigValue("mmoitems-id");
             String id = "";
             if (idObj instanceof String) id = (String) idObj;
-            if (!id.equals("")) {
-                if (!id.equalsIgnoreCase(NBTItem.get(item).getString("MMOITEMS_ITEM_ID"))) {
-                    super.debug("MMOItems id ('" + NBTItem.get(item).getString("MMOITEMS_ITEM_ID") + "') does not match required type, continuing...", quest.getId(), task.getId(), player.getUniqueId());
-                    continue;
-                }
+            if (!id.equals("") && !id.equalsIgnoreCase(NBTItem.get(item).getString("MMOITEMS_ITEM_ID"))) {
+                super.debug("MMOItems id ('" + NBTItem.get(item).getString("MMOITEMS_ITEM_ID") + "') does not match required type, continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                continue;
             }
 
 
@@ -192,11 +188,9 @@ public class MMOItemsCraft extends BukkitTaskType {
             Object idObj = task.getConfigValue("mmoitems-id");
             String id = "";
             if (idObj instanceof String) id = (String) idObj;
-            if (!id.equals("")) {
-                if (!id.equalsIgnoreCase(NBTItem.get(item).getString("MMOITEMS_ITEM_ID"))) {
-                    super.debug("MMOItems id ('" + NBTItem.get(item).getString("MMOITEMS_ITEM_ID") + "') does not match required type, continuing...", quest.getId(), task.getId(), player.getUniqueId());
-                    continue;
-                }
+            if (!id.equals("") && !id.equalsIgnoreCase(NBTItem.get(item).getString("MMOITEMS_ITEM_ID"))) {
+                super.debug("MMOItems id ('" + NBTItem.get(item).getString("MMOITEMS_ITEM_ID") + "') does not match required type, continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                continue;
             }
 
 

@@ -27,7 +27,7 @@ public class OpenCrate extends BukkitTaskType {
     }
 
     @EventHandler
-    public void onOpen(PlayerPrizeEvent event) {
+    public void onCrateOpen(PlayerPrizeEvent event) {
         Player player = event.getPlayer();
         QPlayer qPlayer = plugin.getPlayerManager().getPlayer(player.getUniqueId());
         if (qPlayer == null) return;

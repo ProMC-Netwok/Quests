@@ -44,7 +44,7 @@ public final class Inventory extends BukkitTaskType {
     }
 
     @Override
-    public void onReady() {
+    public void onLoad() {
         fixedQuestItemCache.clear();
     }
 

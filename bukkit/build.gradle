@@ -48,21 +48,15 @@ repositories {
 dependencies {
     compileOnly project(':common')
     // Paper
-    compileOnly ('com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT')
-    // ASkyBlock
-    compileOnly ('com.wasteofplastic:askyblock:3.0.9.4') { transitive = false }
+    compileOnly('com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT')
     // AuthLib
-    compileOnly ('com.mojang:authlib:1.5.21') { transitive = false }
-    // BentoBox
-    compileOnly ('world.bentobox:bentobox:1.22.0-SNAPSHOT') { transitive = false }
+    compileOnly('com.mojang:authlib:1.5.21') { transitive = false }
     // Citizens
-    compileOnly ('net.citizensnpcs:citizensapi:2.0.30-SNAPSHOT') { transitive = false }
+    compileOnly('net.citizensnpcs:citizensapi:2.0.30-SNAPSHOT') { transitive = false }
     // CoreProtect
     compileOnly 'net.coreprotect:coreprotect:21.2'
     // EssentialsX
-    compileOnly ('net.essentialsx:EssentialsX:2.19.7') { transitive = false }
-    // FabledSkyblock
-    compileOnly 'com.songoda:skyblock:2.3.30'
+    compileOnly('net.essentialsx:EssentialsX:2.19.7') { transitive = false }
     // JetBrains Annotations
     compileOnly 'org.jetbrains:annotations:23.0.0'
     // MMOItems
@@ -75,27 +69,16 @@ dependencies {
     compileOnly 'io.lumine:Mythic-Dist:5.2.0'
     // MMOCore
     compileOnly 'net.Indyuce:MMOCore-API:1.12-SNAPSHOT'
-    // NuVotifier
-    compileOnly 'com.vexsoftware:NuVotifier:2.7.3'
     // PlaceholderAPI
     compileOnly 'me.clip:placeholderapi:2.11.3-DEV-160'
-    // SCore
-    compileOnly 'com.github.Ssomar-Developement:SCore:3.4.7'
     // ShopGUIPlus
-    compileOnly ('com.github.brcdev-minecraft:shopgui-api:3.0.0') { transitive = false }
-    // Slimefun4
-    compileOnly 'com.github.Slimefun:Slimefun4:RC-32'
-    // SuperiorSkyblock2
-    compileOnly 'com.bgsoftware:SuperiorSkyblockAPI:2022.9'
-    // uSkyBlock
-    compileOnly ('com.github.rlf:uSkyBlock-API:2.8.3') { transitive = false }
-    // VotingPlugin
-    compileOnly ('com.bencodez:votingplugin:6.9.5') { transitive = false }
+    compileOnly('com.github.brcdev-minecraft:shopgui-api:3.0.0') { transitive = false }
+    // AuctionGUIPlus
+    compileOnly('com.github.brcdev-minecraft:auctiongui-api:2.0.0') { transitive = false }
 
     // External Libs
     compileOnly fileTree(dir: 'libs', includes: ['*.jar'])
-    // AuctionGUI+
-    implementation 'com.github.brcdev-minecraft:auctiongui-api:2.0.0'
+
     // MiniMessage
     implementation group: 'net.kyori', name: 'adventure-text-minimessage', version: '4.12.0'
     // bStats

@@ -167,7 +167,6 @@ public class TaskUtils {
                 }
             }
         }
-
         return tasks;
     }
 

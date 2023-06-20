@@ -5,7 +5,6 @@ import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
 import com.leonardobishop.quests.bukkit.util.TaskUtils;
 import com.leonardobishop.quests.common.player.QPlayer;
 import com.leonardobishop.quests.common.player.questprogressfile.TaskProgress;
-import com.leonardobishop.quests.common.quest.Quest;
 import com.leonardobishop.quests.common.quest.Task;
 import net.brcdev.auctiongui.event.AuctionPostStartEvent;
 import org.bukkit.entity.Player;
@@ -23,36 +22,30 @@ public class AuctionStart extends BukkitTaskType {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAuctionStart(AuctionPostStartEvent event) {
-        QPlayer qPlayer = plugin.getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
-        // 检查玩家数据
-        if (qPlayer == null) return;
-        // 获取玩家实例
         Player player = event.getPlayer();
-        // 遍历玩家所有激活的任务
+        QPlayer qPlayer = plugin.getPlayerManager().getPlayer(player.getUniqueId());
+        if (qPlayer == null) return;
         for (TaskUtils.PendingTask pendingTask : TaskUtils.getApplicableTasks(player, qPlayer, this)) {
-            Quest quest = pendingTask.quest();
             Task task = pendingTask.task();
             TaskProgress taskProgress = pendingTask.taskProgress();
-            // Debug 玩家放置信息
-            super.debug("Player start auction", quest.getId(), task.getId(), player.getUniqueId());
+
+            //super.debug("Player start auction", quest.getId(), task.getId(), player.getUniqueId());
 
             Object amountObj = task.getConfigValue("amount");
-            int amount = amountObj == null ? event.getAuction().getItemStack().getAmount() : (int) amountObj;
+            int amount = amountObj == null ? 1 : (int) amountObj;
 
             int curProgress = TaskUtils.getIntegerTaskProgress(taskProgress);
             int newProgress = curProgress + event.getAuction().getItemStack().getAmount();
 
             taskProgress.setProgress(newProgress);
 
-            super.debug("Updating task progress (now " + newProgress + ")", quest.getId(), task.getId(), player.getUniqueId());
+            //super.debug("Updating task progress (now " + newProgress + ")", quest.getId(), task.getId(), player.getUniqueId());
 
             if (newProgress >= amount) {
-                super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
+                //super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setProgress(amount);
                 taskProgress.setCompleted(true);
             }
         }
-
-
     }
 }

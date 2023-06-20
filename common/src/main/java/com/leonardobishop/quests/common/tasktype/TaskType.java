@@ -2,7 +2,6 @@ package com.leonardobishop.quests.common.tasktype;
 
 import com.leonardobishop.quests.common.config.ConfigProblem;
 import com.leonardobishop.quests.common.quest.Quest;
-import com.leonardobishop.quests.common.quest.Task;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,8 +23,8 @@ public abstract class TaskType {
     private String description;
 
     /**
-     * @param type the name of the task type, should not contain spaces
-     * @param author the name of the person (or people) who wrote it
+     * @param type        the name of the task type, should not contain spaces
+     * @param author      the name of the person (or people) who wrote it
      * @param description a short, simple description of the task type
      */
     public TaskType(@NotNull String type, String author, String description, String... aliases) {
@@ -34,8 +33,8 @@ public abstract class TaskType {
     }
 
     /**
-     * @param type the name of the task type, should not contain spaces
-     * @param author the name of the person (or people) who wrote it
+     * @param type        the name of the task type, should not contain spaces
+     * @param author      the name of the person (or people) who wrote it
      * @param description a short, simple description of the task type
      */
     public TaskType(@NotNull String type, String author, String description) {
@@ -101,20 +100,18 @@ public abstract class TaskType {
      * Called when Quests has finished registering all quests to the task type.
      * May be called several times if an operator uses /quests admin reload.
      */
-    public void onReady() {
+    public void onLoad() {
         // not implemented here
     }
+
 
     /**
-     * Called when a player starts a quest containing a task of this type.
+     * Called when plugin disable
      */
-    public void onStart(Quest quest, Task task, UUID playerUUID) {
-        // not implemented here
-    }
-
     public void onDisable() {
         // not implemented here
     }
+
 
     public void addConfigValidator(@NotNull ConfigValidator validator) {
         Objects.requireNonNull(validator, "validator cannot be null");
@@ -125,6 +122,7 @@ public abstract class TaskType {
     public List<ConfigValidator> getConfigValidators() {
         return configValidators;
     }
+
 
     @FunctionalInterface
     public interface ConfigValidator {

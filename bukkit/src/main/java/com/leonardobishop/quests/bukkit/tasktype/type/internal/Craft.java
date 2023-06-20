@@ -36,7 +36,7 @@ public final class Craft extends BukkitTaskType {
     }
 
     @Override
-    public void onReady() {
+    public void onLoad() {
         fixedQuestItemCache.clear();
     }
 

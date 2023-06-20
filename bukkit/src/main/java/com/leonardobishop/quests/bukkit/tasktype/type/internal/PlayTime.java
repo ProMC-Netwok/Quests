@@ -27,7 +27,7 @@ public final class PlayTime extends BukkitTaskType {
 
 
     @Override
-    public void onReady() {
+    public void onLoad() {
         if (this.poll == null) {
             this.poll = new BukkitRunnable() {
                 @Override
